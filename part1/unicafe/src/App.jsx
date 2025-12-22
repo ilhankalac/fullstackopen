@@ -12,21 +12,32 @@ const Options = ({ onGoodClick, onNeutralClick, onBadClick }) => {
 
 const Statistics = ({ good, neutral, bad }) => {
   const all = good + neutral + bad
+
+  if (all === 0) {
+    return (
+      <div>
+        <h1>statistics</h1>
+        <div>No feedback given</div>
+      </div>
+    )
+  }
+
   const average = (good - bad) / all
   const positive = (good / all) * 100
 
   return (
-    <div> 
+    <div>
       <h1>statistics</h1>
       <div>good {good}</div>
       <div>neutral {neutral}</div>
       <div>bad {bad}</div>
       <div>all {all}</div>
-      <div>average {isNaN(average) ? 0 : average}</div>
-      <div>positive {isNaN(positive) ? 0 : positive} %</div>
+      <div>average {average}</div>
+      <div>positive {positive} %</div>
     </div>
   )
 }
+
 
 const App = () => {
   // save clicks of each button to its own state
