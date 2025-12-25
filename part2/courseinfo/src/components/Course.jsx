@@ -6,7 +6,7 @@ const Course = ({ course }) => {
         <p key={part.id}>{part.name} { part.exercises }</p>
       ))}
       <strong>
-        total of { course.parts.reduce((sum, part) => sum + part.exercises,0)}
+        total of { course.parts.reduce((sum, part) => sum + part.exercises,0)} exercises
       </strong>
     </div>
   )
