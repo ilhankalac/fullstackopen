@@ -1,23 +1,5 @@
 import Course from './components/Course'
 
-const Header = (props) => <h1>{props.course}</h1>
-
-const Content = (props) => (
-  <div>
-    <Part part={props.parts[0]} />
-    <Part part={props.parts[1]} />
-    <Part part={props.parts[2]} />
-  </div>
-)
-
-const Part = (props) => (
-  <p>
-    {props.part.name} {props.part.exercises}
-  </p>
-)
-
-const Total = (props) => <p>Number of exercises {props.total}</p>
-
 const App = () => {
   const courses = [
     {
@@ -66,6 +48,7 @@ const App = () => {
 
   return (
     <div>
+      <h1>Web development curriculum</h1>
       {courses.map(course => (
         <Course
           key={course.id}
