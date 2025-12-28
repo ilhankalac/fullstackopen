@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
-import personService from './services/persons'
+import personsService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
 
   useEffect(() => {
-    personService
+    personsService
       .getAll()
       .then(response => {
         console.log('promise fulfilled')
@@ -50,14 +50,15 @@ const App = () => {
       setNewName('')
       return
     }
-
+    // find the highest current id and add 1
+    const highestId = persons.find(person => Number(person.id) === Math.max(...persons.map(p => Number(p.id))))?.id || 0
     const newPerson = {
-      id: persons.length + 1,
+      id: (Number(highestId) + 1).toString(),
       name: newName.trim(),
       number: newNumber
     }
 
-    personService.create(newPerson).then(responseData => {
+    personsService.create(newPerson).then(responseData => {
       setPersons(persons.concat(responseData))
     })
 
@@ -65,6 +66,13 @@ const App = () => {
     setNewNumber('')
   }
 
+  const onDeletePerson = (id) => {
+    if(confirm(`Delete ${persons.find(person => person.id === id)?.name}?`)) {
+      personsService.deleteObj(id).then(() => {
+        setPersons(persons.filter(person => person.id !== id))
+      })
+    }
+  }
   return (
     <div>
       <h2>Phonebook</h2>
@@ -86,7 +94,10 @@ const App = () => {
 
       <h2>Numbers</h2>
 
-      <Persons persons={personsToShow} />
+      <Persons
+        persons={personsToShow}
+        onDeletePerson={onDeletePerson}
+      />
     </div>
   )
 }
