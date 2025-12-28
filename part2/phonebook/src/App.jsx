@@ -8,12 +8,9 @@ const App = () => {
   const [persons, setPersons] = useState([])
 
   useEffect(() => {
-    personsService
-      .getAll()
-      .then(response => {
-        console.log('promise fulfilled')
-        setPersons(response)
-      })
+    personsService.getAll().then(response => {
+      setPersons(response)
+    })
   }, [])
 
   const [newName, setNewName] = useState('')
@@ -46,11 +43,22 @@ const App = () => {
     event.preventDefault()
 
     if (doesNameExist(newName)) {
-      alert(`${newName} is already added to phonebook`)
-      setNewName('')
+      if (confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+        const currentPerson = { ...persons.find(person => person.name === newName), number: newNumber }
+        personsService.update(currentPerson.id, currentPerson).then(responseData => {
+          setPersons(
+            persons.map(person =>
+              person.id !== responseData.id ? person : responseData
+            )
+          )
+  
+          setNewName('')
+          setNewNumber('')
+        })
+      }
       return
     }
-    // find the highest current id and add 1
+
     const highestId = persons.find(person => Number(person.id) === Math.max(...persons.map(p => Number(p.id))))?.id || 0
     const newPerson = {
       id: (Number(highestId) + 1).toString(),
