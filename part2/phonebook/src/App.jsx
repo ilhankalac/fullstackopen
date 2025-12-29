@@ -17,7 +17,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchValue, setSearchValue] = useState('')
-  const [notificationMessage, setNotificationMessage] = useState(null)
+  const [notification, setNotification] = useState(null)
 
   const handleNameChange = (event) => {
     setNewName(event.target.value)
@@ -57,11 +57,25 @@ const App = () => {
           setNewName('')
           setNewNumber('')
 
-          setNotificationMessage('Updated ' + currentPerson.name)
+          setNotification({
+            message: 'Updated ' + currentPerson.name,
+            type: 'success'
+          })
           setTimeout(() => {
-            setNotificationMessage(null)
-          }, 3000);
+            setNotification(null)
+          }, 5000);
 
+        }).catch(() => {
+          setNotification(
+            {
+              message: `Information of '${currentPerson.name}' has been already removed from server`,
+              type: 'error'
+            }
+          )
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)
+          setPersons(persons.filter(n => n.id !== currentPerson.id))
         })
       }
       return
@@ -78,10 +92,13 @@ const App = () => {
       setPersons(persons.concat(responseData))
       setNewName('')
       setNewNumber('')
-      setNotificationMessage('Added ' + newPerson.name)
+      setNotification({
+        message: 'Added ' + newPerson.name,
+        type: 'success'
+      })
       setTimeout(() => {
-        setNotificationMessage(null)
-      }, 3000);
+        setNotification(null)
+      }, 5000);
     })
   }
 
@@ -96,8 +113,8 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
 
-      {notificationMessage && (
-        <Notification notificationMessage={notificationMessage} />
+      {notification && (
+        <Notification notification={notification} />
       )}
 
       <Filter
