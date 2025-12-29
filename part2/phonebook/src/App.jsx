@@ -3,6 +3,7 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import personsService from './services/persons'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -16,6 +17,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchValue, setSearchValue] = useState('')
+  const [notificationMessage, setNotificationMessage] = useState(null)
 
   const handleNameChange = (event) => {
     setNewName(event.target.value)
@@ -51,9 +53,15 @@ const App = () => {
               person.id !== responseData.id ? person : responseData
             )
           )
-  
+        
           setNewName('')
           setNewNumber('')
+
+          setNotificationMessage('Updated ' + currentPerson.name)
+          setTimeout(() => {
+            setNotificationMessage(null)
+          }, 3000);
+
         })
       }
       return
@@ -68,10 +76,13 @@ const App = () => {
 
     personsService.create(newPerson).then(responseData => {
       setPersons(persons.concat(responseData))
+      setNewName('')
+      setNewNumber('')
+      setNotificationMessage('Added ' + newPerson.name)
+      setTimeout(() => {
+        setNotificationMessage(null)
+      }, 3000);
     })
-
-    setNewName('')
-    setNewNumber('')
   }
 
   const onDeletePerson = (id) => {
@@ -84,6 +95,10 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+
+      {notificationMessage && (
+        <Notification notificationMessage={notificationMessage} />
+      )}
 
       <Filter
         value={searchValue}
