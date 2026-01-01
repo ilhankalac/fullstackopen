@@ -26,8 +26,9 @@ const App = () => {
         name: country?.name?.common || '',
         capital: country.capital || [],
         area: country.area || 0,
-        languages: country.languages || {},
-        id: country.cca3 
+        languages: Object.values(country?.languages || {}).map(String),
+        id: country.cca3,
+        flag: country.flags.png
       }))
       setCountries(cleanData)
       setAllCountries(cleanData)
@@ -37,16 +38,36 @@ const App = () => {
   return (
     <div>
       find countries <input value={searchValue} onChange={handleSearchInput} />
-      <div>
-        {searchValue.length > 0 && countries.length < 10 &&
-          countries.map(country => (
-            <div key={country.id}>{country.name}</div>
-          ))
-        }
-        {searchValue.length > 0 && countries.length >= 10 && (
-          <div>Too many matches, specify another filter</div>
-        )}
-      </div>
+      {countries.length > 1 && (
+        <div>
+          {searchValue.length > 0 && countries.length < 10 &&
+            countries.map(country => (
+              <div key={country.id}>
+                {country.name}
+              </div>
+            ))
+          }
+          {searchValue.length > 0 && countries.length >= 10 && (
+            <div>Too many matches, specify another filter</div>
+          )}
+        </div>
+      )}
+      {countries.length === 1 && (
+        <div>
+          <h1>{countries[0].name}</h1>
+          <div>Capital {countries[0].capital}</div>
+          <div>Area {countries[0].area}</div>
+          <h1>Languages</h1>
+          <ul>  
+            {
+              countries[0].languages.map(language => {
+                return <li key={language}>{ language }</li>
+              })
+            }
+          </ul>
+          <img src={countries[0].flag } alt="Flag" />
+        </div>
+      )}
     </div>
   )
 }
