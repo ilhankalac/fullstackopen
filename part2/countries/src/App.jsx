@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import countriesService from "./services/countries"
+import Country from "./components/Country"
 
 const App = () => {
   const [searchValue, setSearchValue] = useState('')
@@ -53,20 +54,7 @@ const App = () => {
         </div>
       )}
       {countries.length === 1 && (
-        <div>
-          <h1>{countries[0].name}</h1>
-          <div>Capital {countries[0].capital}</div>
-          <div>Area {countries[0].area}</div>
-          <h1>Languages</h1>
-          <ul>  
-            {
-              countries[0].languages.map(language => {
-                return <li key={language}>{ language }</li>
-              })
-            }
-          </ul>
-          <img src={countries[0].flag } alt="Flag" />
-        </div>
+        <Country country={countries[0]} />
       )}
     </div>
   )
