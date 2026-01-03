@@ -22,6 +22,11 @@ const App = () => {
     setCountries(results)
   }
 
+  const showSelectedCountry = (id) => {
+    const selectedCountry = countries.find(country => country.id === id)
+    setCountries([selectedCountry])
+  }
+
   useEffect(() => {
     countriesService.getAll().then((data) => {
       const cleanData = data.map((country) => ({
@@ -41,7 +46,11 @@ const App = () => {
     <div>
       find countries <input value={searchValue} onChange={handleSearchInput} />
       {countries.length > 1 && (
-        <Countries searchValue={searchValue} countries={countries} />
+        <Countries
+          searchValue={searchValue}
+          countries={countries}
+          showSelected={showSelectedCountry}
+        />
       )}
       {countries.length === 1 && (
         <Country country={countries[0]} />

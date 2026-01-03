@@ -1,10 +1,10 @@
-const Countries = ({searchValue, countries}) => {
+const Countries = ({searchValue, countries, showSelected}) => {
   return (
     <div>
       {searchValue.length > 0 && countries.length < 10 &&
         countries.map(country => (
           <div key={country.id}>
-            {country.name}
+            {country.name} <button onClick={()=>showSelected(country.id)}>Show</button>
           </div>
         ))
       }
