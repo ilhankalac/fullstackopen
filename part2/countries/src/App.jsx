@@ -35,7 +35,9 @@ const App = () => {
         area: country.area || 0,
         languages: Object.values(country?.languages || {}).map(String),
         id: country.cca3,
-        flag: country.flags.png
+        flag: country.flags.png,
+        lat: country?.capitalInfo?.latlng?.[0] ?? null,
+        lon: country?.capitalInfo?.latlng?.[1] ?? null,
       }))
       setCountries(cleanData)
       setAllCountries(cleanData)
