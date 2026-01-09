@@ -5,11 +5,6 @@ var morgan = require('morgan')
 const cors = require('cors')
 const mongoose = require('mongoose')
 require('dotenv').config()
-
-mongoose.set('strictQuery', false)
-const url = process.env.MONGODB_URI
-mongoose.connect(url, { family: 4 })
-
 app.use(express.static('dist'))
 
 app.use(cors())
@@ -25,13 +20,7 @@ app.use(morgan(function (tokens, req, res) {
   ].join(' ')
 }))
 
-const personSchema = new mongoose.Schema({
-  name: String,
-  number: String
-})
-
-const Person = mongoose.model('Person', personSchema)
-
+const Person = require('./models/person')
 app.get('/api/persons', (request, response) => {
   Person.find({}).then(contacts => {
     response.json(contacts)
