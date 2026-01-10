@@ -19,6 +19,7 @@ app.use(morgan(function (tokens, req, res) {
 }))
 
 const Person = require('./models/person')
+
 app.get('/api/persons', (request, response, next) => {
   Person.find({}).then(contacts => {
     response.json(contacts)
@@ -61,33 +62,63 @@ const generateId = () => {
   return Math.floor(Math.random() * 1_000_000_000)
 }
 
-/*const checkIfNameExists = (personObj) => {
-  return persons.find(person => person.name === personObj.name)
-}*/
+const checkIfNameExists = (personObj) => {
+  return Person.findOne({ name: personObj.name })
+    .then(result => {
+      return !!result;
+    })
+    .catch(err => {
+      console.error(err);
+      return false;
+    });
+};
+
+app.put('/api/persons/:id', (request, response, next) => {
+  const id = request.params.id
+  const { name, number } = request.body
+  console.log(name, number);
+  Person.findById(id).then(person => {
+
+    if (!person) {
+      return response.status(404).end()
+    }
+
+    person.name = name
+    person.number = number
+
+    return person.save().then((updatedPerson) => {
+      response.json(updatedPerson)
+    })
+  }).catch(error => next(error))
+})
 
 app.post('/api/persons', (request, response, next) => {
-  const body = request.body
+  const body = request.body;
+
+  if (!body.name || !body.number) {
+    return response.status(400).json({ error: 'content missing' });
+  }
 
   const person = new Person({
     id: generateId(),
     name: body.name,
-    number:  body.number
-  })
+    number: body.number,
+  });
 
-  if (!person.name || !person.number) {
-    return response.status(400).json({ error: 'content missing' })
-  }
+  return checkIfNameExists(person)
+    .then(exists => {
+      if (exists) {
+        return response.status(400).json({ error: 'name must be unique' });
+      }
 
-  /*if (checkIfNameExists(person)) {
-    return response.status(400).json({ error: 'name must be unique' })
-  }*/
-  
-  person.save().then(result => {
-    console.log('person saved');
-  }).catch(error => next(error))
-  
-  response.json(person)
-})
+      return person.save().then(saved => {
+        console.log('person saved');
+        return response.status(201).json(saved);
+      });
+    })
+    .catch(next);
+});
+
 
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
