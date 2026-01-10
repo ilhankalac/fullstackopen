@@ -3,7 +3,6 @@ const app = express()
 app.use(express.json())
 var morgan = require('morgan')
 const cors = require('cors')
-const mongoose = require('mongoose')
 require('dotenv').config()
 app.use(express.static('dist'))
 
@@ -60,28 +59,30 @@ const generateId = () => {
   return Math.floor(Math.random() * 1_000_000_000)
 }
 
-const checkIfNameExists = (personObj) => {
+/*const checkIfNameExists = (personObj) => {
   return persons.find(person => person.name === personObj.name)
-}
+}*/
 
 app.post('/api/persons', (request, response) => {
   const body = request.body
 
-  const person = {
+  const person = new Person({
     id: generateId(),
     name: body.name,
     number:  body.number
-  }
+  })
 
   if (!person.name || !person.number) {
     return response.status(400).json({ error: 'content missing' })
   }
 
-  if (checkIfNameExists(person)) {
+  /*if (checkIfNameExists(person)) {
     return response.status(400).json({ error: 'name must be unique' })
-  }
+  }*/
   
-  persons.push(person)
+  person.save().then(result => {
+    console.log('person saved');
+  })
   response.json(person)
 })
 
