@@ -65,10 +65,10 @@ const App = () => {
             setNotification(null)
           }, 5000);
 
-        }).catch(() => {
+        }).catch((error) => {
           setNotification(
             {
-              message: `Information of '${currentPerson.name}' has been already removed from server`,
+              message: error.response.data.error,
               type: 'error'
             }
           )
@@ -96,6 +96,17 @@ const App = () => {
         message: 'Added ' + newPerson.name,
         type: 'success'
       })
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000);
+    }).catch(error => {
+      const errorMessage = error.response.data.error
+      setNotification(
+        {
+          message: errorMessage,
+          type: 'error'
+        }
+      )
       setTimeout(() => {
         setNotification(null)
       }, 5000);
