@@ -53,7 +53,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
   const id = request.params.id
-  Person.findByIdAndDelete(id).then(result => {
+  Person.findByIdAndDelete(id).then(() => {
     response.status(204).end()
   }).catch(error => next(error))
 })
@@ -65,18 +65,18 @@ const generateId = () => {
 const checkIfNameExists = (personObj) => {
   return Person.findOne({ name: personObj.name })
     .then(result => {
-      return !!result;
+      return !!result
     })
     .catch(err => {
-      console.error(err);
-      return false;
-    });
-};
+      console.error(err)
+      return false
+    })
+}
 
 app.put('/api/persons/:id', (request, response, next) => {
   const id = request.params.id
   const { name, number } = request.body
-  console.log(name, number);
+  console.log(name, number)
   Person.findById(id).then(person => {
 
     if (!person) {
@@ -93,31 +93,31 @@ app.put('/api/persons/:id', (request, response, next) => {
 })
 
 app.post('/api/persons', (request, response, next) => {
-  const body = request.body;
+  const body = request.body
 
   if (!body.name || !body.number) {
-    return response.status(400).json({ error: 'content missing' });
+    return response.status(400).json({ error: 'content missing' })
   }
 
   const person = new Person({
     id: generateId(),
     name: body.name,
     number: body.number,
-  });
+  })
 
   return checkIfNameExists(person)
     .then(exists => {
       if (exists) {
-        return response.status(400).json({ error: 'name must be unique' });
+        return response.status(400).json({ error: 'name must be unique' })
       }
 
       return person.save().then(saved => {
-        console.log('person saved');
-        return response.status(201).json(saved);
-      });
+        console.log('person saved')
+        return response.status(201).json(saved)
+      })
     })
-    .catch(next);
-});
+    .catch(next)
+})
 
 
 const unknownEndpoint = (request, response) => {
