@@ -3,6 +3,9 @@ const mongoose = require('mongoose')
 const logger = require('./utils/logger')
 const blogsRouter = require('./controllers/blogs')
 const middleware = require('./utils/middleware')
+const config = require('./utils/config')
+
+const url = config.MONGODB_URI
 
 require('dotenv').config()
 
