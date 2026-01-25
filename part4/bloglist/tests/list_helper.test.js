@@ -53,7 +53,6 @@ const blogs = [
   }  
 ]
 
-listHelper.mostBlogs(blogs)
 
 test('dummy returns one', () => {
   const blogs = []
@@ -99,6 +98,17 @@ describe('favorite blog', () => {
       url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
       likes: 12,
       __v: 0
+    }
+    assert.deepStrictEqual(result, expected)
+  })
+})
+
+describe('most blogs', () => {
+  test('this list should return the author with most blogs', () => {
+    const result = listHelper.mostBlogs(blogs)
+    const expected = {
+      author: "Robert C. Martin",
+      blogs: 3
     }
     assert.deepStrictEqual(result, expected)
   })
