@@ -53,6 +53,8 @@ const blogs = [
   }  
 ]
 
+listHelper.mostBlogs(blogs)
+
 test('dummy returns one', () => {
   const blogs = []
 
