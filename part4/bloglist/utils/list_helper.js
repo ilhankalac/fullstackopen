@@ -18,6 +18,31 @@ const favoriteBlog = (blogs) => {
   });
 }
 
+const mostLikes = (blogs) => {
+  if (blogs.length === 0) {
+    return null
+  }
+
+  const authors = new Set(
+    blogs.map(blog => blog.author)
+  )
+
+  const likesByAuthor = []
+
+  authors.forEach(author => {
+    likesByAuthor.push({
+      author,
+      likes: blogs
+        .filter(blog => blog.author === author)
+        .reduce((sum, blog) => sum + blog.likes, 0)
+    })
+  })
+
+  return likesByAuthor.reduce((topAuthor, currentAuthor) => {
+    return currentAuthor.likes > topAuthor.likes ? currentAuthor : topAuthor
+  })
+}
+
 const mostBlogs = (blogs) => {
   if (blogs.length === 0) {
     return null
@@ -46,5 +71,6 @@ module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 }
