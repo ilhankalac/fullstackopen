@@ -7,8 +7,6 @@ const config = require('./utils/config')
 
 const url = config.MONGODB_URI
 
-require('dotenv').config()
-
 const app = express()
 
 logger.info('connecting to', url)
