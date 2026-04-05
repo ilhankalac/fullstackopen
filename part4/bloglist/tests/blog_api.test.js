@@ -72,7 +72,7 @@ test('POST /api/blogs creates a new blog with valid data', async () => {
   assert.strictEqual(response.body.length, initialBlogs.length + 1)
 })
 
-test('default likes value is 0 if likes property is missing', async () => {
+test('POST /api/blogs sets default likes value to 0 if likes property is missing', async () => {
   const newBlog = {
     title: 'Blog without likes',
     author: 'Author Five',
@@ -88,6 +88,18 @@ test('default likes value is 0 if likes property is missing', async () => {
   const addedBlog = response.body.find(blog => blog.title === 'Blog without likes')
 
   assert.strictEqual(addedBlog.likes, 0)
+})
+
+test('POST /api/blogs without title or url returns 400 Bad Request', async () => {
+  const newBlog = {
+    author: 'Author Six',
+    likes: 4
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
 })
 
 after(async () => {
