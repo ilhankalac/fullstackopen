@@ -116,6 +116,31 @@ test('DELETE /api/blogs/:id deletes a blog post', async () => {
   assert.strictEqual(deletedBlog, undefined)
 })
 
+test('PUT /api/blogs/:id updates a blog post', async () => {
+  const response = await api.get('/api/blogs')
+  const blogToUpdate = response.body[0]
+  
+  const updatedBlogData = {
+    title: 'Updated Title 1',
+    author: 'Updated Author 1',
+    url: 'http://new-url.com/updated',
+    likes: 9
+  }
+
+  await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send(updatedBlogData)
+    .expect(200)
+
+  const updatedBlogResponse = await api.get('/api/blogs')
+  const updatedBlog = updatedBlogResponse.body.find(blog => blog.id === blogToUpdate.id)
+
+  assert.strictEqual(updatedBlog.title, updatedBlogData.title)
+  assert.strictEqual(updatedBlog.author, updatedBlogData.author)
+  assert.strictEqual(updatedBlog.url, updatedBlogData.url)
+  assert.strictEqual(updatedBlog.likes, updatedBlogData.likes)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
