@@ -102,6 +102,20 @@ test('POST /api/blogs without title or url returns 400 Bad Request', async () =>
     .expect(400)
 })
 
+test('DELETE /api/blogs/:id deletes a blog post', async () => {
+  const response = await api.get('/api/blogs')
+  const blogToDelete = response.body[0]
+  
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204) 
+  
+  const blogsAfterDeletion = await api.get('/api/blogs')
+  assert.strictEqual(blogsAfterDeletion.body.length, initialBlogs.length - 1)
+  const deletedBlog = blogsAfterDeletion.body.find(blog => blog.id === blogToDelete.id)
+  assert.strictEqual(deletedBlog, undefined)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
