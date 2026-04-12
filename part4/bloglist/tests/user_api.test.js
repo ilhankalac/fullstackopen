@@ -29,6 +29,24 @@ test('user without username is not created', async () => {
   assert.strictEqual(users.length, 0)
 })
 
+test('user without password is not created', async () => {
+  const newUser = {
+    username: 'someuser',
+    name: 'Some User'
+  }
+
+  const result = await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
+
+  assert.ok(result.body.error)
+
+  const users = await User.find({})
+  assert.strictEqual(users.length, 0)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
